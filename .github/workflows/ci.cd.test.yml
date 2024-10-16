@@ -5,4 +5,5 @@ on:
     branches: ['release/v**']
 
 jobs:
-  deploy:
+  deploy: 
+    environment: test
