@@ -1,0 +1,3 @@
+python-dotenv
+nextcord
+openai==0.28
