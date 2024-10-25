@@ -1,3 +1,4 @@
 python-dotenv
 nextcord
 openai
+faiss-cpu
