@@ -3,6 +3,9 @@ import numpy as np
 from datetime import datetime
 from openai import OpenAI
 
+import uuid
+from datetime import datetime
+
 client = OpenAI()
 
 class ConversationHistory:
@@ -10,6 +13,21 @@ class ConversationHistory:
         self.embedding_dim = embedding_dim
         self.index = faiss.IndexFlatL2(self.embedding_dim)
         self.messages = []  # 메시지와 메타 데이터 함께 저장
+
+
+    def generate_conversation_id(self, uid):
+        """
+        UUID와 사용자 ID를 조합하여 고유한 대화 ID를 생성하는 함수.
+        
+        Args:
+            uid (str): 사용자 고유 ID
+            
+        Returns:
+            str: 고유한 conversation_id
+        """
+        unique_id = f"{uuid.uuid4()}-{uid}"
+        return unique_id
+
 
     def get_embedding(self, text):
         response = client.embeddings.create(
@@ -61,21 +79,21 @@ class ConversationHistory:
         filtered_messages = sorted(filtered_messages, key=lambda x: x["timestamp"], reverse=True)
         return filtered_messages[:limit]
 
-# 예제 사용
-if __name__ == "__main__":
-    conv_history = ConversationHistory()
-    conv_history.add_message("user123", "conv1", "user", "오늘 점심 뭐 먹을까?")
-    conv_history.add_message("user123", "conv1", "assistant", "오늘 날씨가 좋으니 밖에서 먹는 건 어때요?")
-    conv_history.add_message("user456", "conv2", "user", "오늘 저녁에 뭐하지?")
+# # 예제 사용
+# if __name__ == "__main__":
+#     conv_history = ConversationHistory()
+#     conv_history.add_message("user123", "conv1", "user", "오늘 점심 뭐 먹을까?")
+#     conv_history.add_message("user123", "conv1", "assistant", "오늘 날씨가 좋으니 밖에서 먹는 건 어때요?")
+#     conv_history.add_message("user456", "conv2", "user", "오늘 저녁에 뭐하지?")
     
-    # 특정 사용자의 대화만 검색
-    result = conv_history.search_messages("내가 뭐라했지", uid="user123")
-    print("특정 사용자 대화 검색 결과:", result)
+#     # 특정 사용자의 대화만 검색
+#     result = conv_history.search_messages("내가 뭐라했지", uid="user123")
+#     print("특정 사용자 대화 검색 결과:", result)
 
-    # 날짜 범위를 지정한 검색 예시
-    result = conv_history.search_messages("내가 뭐라했지", start_date="2023-10-25", end_date="2023-10-26")
-    print("날짜 범위 대화 검색 결과:", result)
+#     # 날짜 범위를 지정한 검색 예시
+#     result = conv_history.search_messages("내가 뭐라했지", start_date="2023-10-25", end_date="2023-10-26")
+#     print("날짜 범위 대화 검색 결과:", result)
 
-    # 모든 사용자와 전체 기간을 대상으로 검색
-    result = conv_history.search_messages("내가 뭐라했지")
-    print("모든 사용자 전체 기간 검색 결과:", result)
+#     # 모든 사용자와 전체 기간을 대상으로 검색
+#     result = conv_history.search_messages("내가 뭐라했지")
+#     print("모든 사용자 전체 기간 검색 결과:", result)
