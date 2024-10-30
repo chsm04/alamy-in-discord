@@ -1,20 +1,22 @@
 import asyncio
-from openai_api import OpenAIChatClient
-
-openai_client = OpenAIChatClient()
+from dto.message_dto import MessageDTO
 
 # 토큰 분할 함수 (토큰을 띄어쓰기 기준으로 분리하는 간단한 예)
 def count_tokens(text):
     return len(text.split())
 
 # OpenAI API 스트리밍 응답을 처리하는 함수
-async def stream_openai_response(channel, prompt_message, response_message,token_threshold=40):
+async def stream_openai_response(channel, message, response_message, openai_client, token_threshold=40):
     full_response = ""  # 전체 응답을 저장할 변수
     token_count = 0  # 누적된 토큰 수
     
     try:
+
+        message_dto = MessageDTO(message.author.id, message.author.name, message.content)
+
+
         # OpenAI API에서 스트림으로 응답 받기
-        async for delta in openai_client.stream_chat_completion([{"role": "user", "content": prompt_message}]):
+        async for delta in openai_client.stream_chat_completion(message_dto):
             full_response += delta  # 응답 누적
             token_count += count_tokens(delta)  # 새로운 토큰 개수 누적
 
