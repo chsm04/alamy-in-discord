@@ -18,6 +18,14 @@ class OpenAIChatClient:
         self.discord_client = self.system.get_discord_bot()
             
 
+    def multi_step_prompt_generate(self, original_input):
+        self.client.chat.completions.create(
+            model=self.model,
+            messages=[{"role" : "user","content" : original_input}],
+            temperature=0.7,
+            response_format={"type" : "json_object"}
+        )
+
     async def stream_chat_completion(self, message_object: MessageDTO):
         """
         OpenAI API의 스트리밍 응답을 처리하는 함수.
@@ -38,6 +46,9 @@ class OpenAIChatClient:
                 content=message_object.content
             )
 
+
+
+            
 
             # 스트리밍 방식으로 채팅 응답 생성
             stream = self.client.chat.completions.create(

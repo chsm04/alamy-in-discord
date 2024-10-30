@@ -6,7 +6,7 @@ def count_tokens(text):
     return len(text.split())
 
 # OpenAI API 스트리밍 응답을 처리하는 함수
-async def stream_openai_response(channel, message, response_message, openai_client, token_threshold=40):
+async def stream_openai_response(channel, message, response_message, openai_client, token_threshold=50):
     full_response = ""  # 전체 응답을 저장할 변수
     token_count = 0  # 누적된 토큰 수
     
